@@ -1,6 +1,6 @@
 ---
 name: feature-sliced-design
-description: Use when the user asks to "implement FSD", "use Feature-Sliced Design", "organize architecture", "structure project folders", "set up FSD layers", "create feature slices", "refactor to FSD", or mentions "feature slices", "layered architecture", "FSD methodology", "views layer", "entities layer", "shared layer", "Next.js with FSD". Provides comprehensive guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Optional: monorepo (Turborepo) support — see references/monorepo.md.
+description: Use when the user asks to implement FSD, use Feature-Sliced Design, organize architecture, structure project folders, set up FSD layers, create feature slices, refactor to FSD, or mentions feature slices, layered architecture, FSD methodology, views layer, entities layer, shared layer, Next.js with FSD. Provides comprehensive guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Optional monorepo (Turborepo) support - see references/monorepo.md.
 version: 0.3.0
 ---
 
