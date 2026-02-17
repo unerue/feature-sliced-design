@@ -1,0 +1,13 @@
+{
+  "version": "0.3.0",
+  "organization": "Engineering",
+  "date": "February 2026",
+  "abstract": "Architectural guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Organizes code into a layered hierarchy (app, views, widgets, features, entities, shared) that prevents circular dependencies and promotes maintainability. Uses a custom 'views' layer—page logic in /src/views, routing in /src/app/. Optional Turborepo monorepo support.",
+  "references": [
+    "https://feature-sliced.design/",
+    "https://feature-sliced.design/docs/reference/layers",
+    "https://feature-sliced.design/docs/reference/public-api",
+    "https://feature-sliced.design/docs/guides/tech/with-nextjs",
+    "https://github.com/feature-sliced/examples"
+  ]
+}
