@@ -1,6 +1,6 @@
 # Feature-Sliced Design Architecture
 
-**Version 0.3.0**  
+**Version 0.4.0**  
 Engineering  
 February 2026
 
@@ -14,7 +14,9 @@ February 2026
 
 ## Abstract
 
-Architectural guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Organizes code into a layered hierarchy (app, views, widgets, features, entities, shared) that prevents circular dependencies and promotes maintainability. Uses a custom **views** layer—page logic in `/src/views`, routing in `/src/app/`. These patterns make codebases easier for both humans and AI agents to work with as they scale.
+Architectural guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Organizes code into a layered hierarchy (app, views, widgets, features, entities, shared) that prevents circular dependencies and promotes maintainability.
+
+**Next.js customization:** `src/app/` merges Next.js App Router with FSD App layer. Page logic lives in `src/views/` (not `pages`). All other FSD rules align with official docs.
 
 ---
 
@@ -372,8 +374,19 @@ export function UserPanel() {
 
 ## References
 
+**Skill references:**
+
+- [layers-and-segments.md](./references/layers-and-segments.md) — Layers, slices, segments, migration
+- [public-api.md](./references/public-api.md) — Public API, @x, circular imports, shared/ui
+- [code-smells.md](./references/code-smells.md) — Desegmentation, anti-patterns
+- [examples.md](./references/examples.md) — Auth, types, API patterns
+- [react-query.md](./references/react-query.md) — React Query + FSD
+
+**External:**
+
 1. [FSD Documentation](https://feature-sliced.design/)
-2. [FSD Layers Reference (v2.1)](https://feature-sliced.design/docs/reference/layers)
+2. [FSD Layers (v2.1)](https://feature-sliced.design/docs/reference/layers)
 3. [FSD Public API](https://feature-sliced.design/docs/reference/public-api)
 4. [FSD with Next.js](https://feature-sliced.design/docs/guides/tech/with-nextjs)
-5. [FSD Examples](https://github.com/feature-sliced/examples)
+5. [FSD with React Query](https://feature-sliced.design/docs/guides/tech/with-react-query)
+6. [FSD Examples](https://github.com/feature-sliced/examples)

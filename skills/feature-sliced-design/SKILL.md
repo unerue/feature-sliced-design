@@ -1,20 +1,37 @@
 ---
 name: feature-sliced-design
 description: Use when the user asks to implement FSD, use Feature-Sliced Design, organize architecture, structure project folders, set up FSD layers, create feature slices, refactor to FSD, or mentions feature slices, layered architecture, FSD methodology, views layer, entities layer, shared layer, Next.js with FSD. Provides comprehensive guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. Optional monorepo (Turborepo) support - see references/monorepo.md.
-version: 0.3.0
+license: MIT
+metadata:
+  version: 0.4.0
 ---
 
 # Feature-Sliced Design Architecture
 
 ## Overview
 
-Provides guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. FSD organizes code into a layered hierarchy that prevents circular dependencies and promotes maintainability. This skill uses a custom **views** layer instead of standard **pages** — page business logic lives in `/src/views`, routing in `/src/app/`.
+Provides guidance for implementing Feature-Sliced Design (FSD v2.1) in Next.js applications. FSD organizes code into a layered hierarchy that prevents circular dependencies and promotes maintainability.
+
+### Next.js Customization (Only Difference from Official FSD)
+
+This skill adapts FSD for **Next.js App Router** with one structural choice:
+
+| Official FSD | This Skill (Next.js) |
+|--------------|----------------------|
+| `app/` (routing, providers) + `pages/` (page logic) | **`src/app/`** = Next.js routing + FSD App merged |
+| `pages/` layer | **`src/views/`** — page business logic |
+| Separate routing layer | Next.js file-based routing (`page.tsx`, `layout.tsx`) |
+
+**`src/app/`** holds both Next.js routing files (`layout.tsx`, `page.tsx`, route groups) and FSD App layer concerns (providers, styles). `page.tsx` imports from `@/views` and renders. All other FSD rules (layers, slices, segments, public API, import rules) align with [FSD v2.1](https://feature-sliced.design/).
 
 **Reference files** (load as needed):
 
-- [layers-and-segments.md](./references/layers-and-segments.md) — Layer definitions, segment patterns, @x cross-reference, migration details
-- [examples.md](./references/examples.md) — Full code examples for each layer (app, views, widgets, features, entities, shared)
-- [monorepo.md](./references/monorepo.md) — *(Optional)* Turborepo + FSD structure for monorepo projects
+- [layers-and-segments.md](./references/layers-and-segments.md) — Layer definitions, slices (zero coupling, slice groups), segment patterns, migration
+- [public-api.md](./references/public-api.md) — Public API rules, @x cross-imports, shared/ui structure, circular imports
+- [code-smells.md](./references/code-smells.md) — Desegmentation, generic folders anti-patterns
+- [examples.md](./references/examples.md) — Full examples: layers, auth patterns, types, API requests
+- [react-query.md](./references/react-query.md) — React Query + FSD: Query Factory, pagination, QueryProvider
+- [monorepo.md](./references/monorepo.md) — *(Optional)* Turborepo + FSD structure
 
 ---
 
@@ -56,7 +73,7 @@ Apply Feature-Sliced Design when:
 FSD v2.1 organizes code into **7 layers** (from most to least responsibility/dependency):
 
 1. **app** - App-wide matters (entrypoint, providers, global styles, router config)
-2. **processes** - Deprecated; move contents to `features` and `app`
+2. **processes** - **Deprecated**; move contents to `features` and `app`
 3. **views** - Page-level business logic (custom naming; standard FSD uses 'pages')
 4. **widgets** - Large self-sufficient UI blocks
 5. **features** - Main user interactions and business value
@@ -64,6 +81,8 @@ FSD v2.1 organizes code into **7 layers** (from most to least responsibility/dep
 7. **shared** - Foundation (UI kit, API client, libs, config)
 
 You don't have to use every layer — add only what brings value. Most projects use at least Shared, Pages (or views), and App.
+
+**FSD v2.1 pages-first:** Start with pages/views; keep most logic there. Extract to features/entities only when code is reused across several pages.
 
 **Import rule:** A module can only import from layers **strictly below** it.
 
@@ -92,11 +111,15 @@ You don't have to use every layer — add only what brings value. Most projects 
 
 **Slices** are domain-based partitions within layers (except app and shared). Examples: `views/dashboard`, `widgets/header`, `features/auth`, `entities/user`.
 
-Each slice exports through `index.ts`. Use explicit exports — avoid `export * from`. Consumers import from public API only; avoid deep imports like `@/features/auth/ui/LoginForm`.
+- **Zero coupling, high cohesion** — Slices should be independent (no same-layer imports) and contain related code.
+- **Slice groups** — Related slices can live in a folder, but **no code sharing** between them inside that folder.
+- Each slice exports through `index.ts`. Use explicit exports — avoid `export * from`. Consumers import from public API only.
+
+See [public-api.md](./references/public-api.md) for circular import rules, shared/ui structure, and @x cross-imports.
 
 ### Segments
 
-Purpose-based groupings within slices:
+Segments group code by **purpose (why)**, not essence (what). Avoid `components`, `hooks`, `types`, `utils` — use purpose-based names.
 
 - **ui/** - React components, visual elements
 - **model/** - Business logic, state management, TypeScript types
@@ -232,7 +255,9 @@ Migrate incrementally; run tests after each layer.
 ## Best Practices
 
 - No cross-slice imports within same layer
-- Export through `index.ts`; avoid deep imports
+- Export through `index.ts`; avoid `export * from`; use explicit exports
+- shared/ui: per-component index for tree-shaking (see [public-api.md](./references/public-api.md))
+- Avoid generic folders/files: `types.ts`, `utils.ts`, `components/` — use domain names (see [code-smells.md](./references/code-smells.md))
 - Colocate tests next to implementation
 - Keep slices focused; avoid "god slices"
 - Name by domain: `features/product-search` not `features/search-bar-component`
@@ -284,19 +309,19 @@ Load these resources as needed during development:
 
 **Core FSD Reference**
 
-- [layers-and-segments.md](./references/layers-and-segments.md) — Layer definitions (app, views, widgets, features, entities, shared), segment patterns (ui, model, api, lib, config), @x cross-reference, valid/invalid import examples, migration details
+- [layers-and-segments.md](./references/layers-and-segments.md) — Layers, slices (zero coupling, slice groups), segments, @x cross-reference, migration (including v2.0→v2.1)
+- [public-api.md](./references/public-api.md) — Public API rules, @x cross-imports, circular imports, shared/ui tree-shaking, Steiger
+- [code-smells.md](./references/code-smells.md) — Desegmentation, generic folder/file anti-patterns
 
 **Implementation Examples**
 
-- [examples.md](./references/examples.md) — Full code examples for:
-  - Standalone Next.js structure
-  - Each layer (app providers, views, widgets, features, entities, shared)
-  - Segment patterns (model/store, lib/validation, form handling, server components)
+- [examples.md](./references/examples.md) — Full examples: each layer, page layouts, auth, types/DTOs, API requests, domain-based files
 
 **Optional**
 
-- [monorepo.md](./references/monorepo.md) — Turborepo + FSD structure for monorepo projects
+- [react-query.md](./references/react-query.md) — React Query + FSD: Query Factory, pagination, QueryProvider
+- [monorepo.md](./references/monorepo.md) — Turborepo + FSD structure
 
 **External**
 
-- [FSD Documentation](https://feature-sliced.design/) | [Layers v2.1](https://feature-sliced.design/docs/reference/layers) | [Public API](https://feature-sliced.design/docs/reference/public-api) | [Next.js Guide](https://feature-sliced.design/docs/guides/tech/with-nextjs) | [FSD Examples](https://github.com/feature-sliced/examples)
+- [FSD Documentation](https://feature-sliced.design/) | [Layers v2.1](https://feature-sliced.design/docs/reference/layers) | [Public API](https://feature-sliced.design/docs/reference/public-api) | [Next.js Guide](https://feature-sliced.design/docs/guides/tech/with-nextjs) | [Migration v2.0→v2.1](https://feature-sliced.design/docs/guides/migration/from-v2-0) | [React Query Guide](https://feature-sliced.design/docs/guides/tech/with-react-query) | [FSD Examples](https://github.com/feature-sliced/examples)

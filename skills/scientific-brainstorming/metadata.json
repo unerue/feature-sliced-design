@@ -1,0 +1,9 @@
+{
+  "version": "0.3.0",
+  "organization": "Research",
+  "date": "February 2026",
+  "abstract": "",
+  "references": [
+    "https://github.com/davila7/claude-code-templates/tree/main/cli-tool/components/skills/scientific/research-grants"
+  ]
+}
